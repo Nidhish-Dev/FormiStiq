@@ -33,12 +33,12 @@ export default function ViewResponses({ params }: { params: Promise<{ uniqueUrl:
       try {
         setLoading(true);
 
-        const response = await axios.get<ApiResponse>(`http://localhost:8000/api/forms/${uniqueUrl}/responses`, {
+        const response = await axios.get<ApiResponse>(`https://formistiq-server.vercel.app/forms/${uniqueUrl}/responses`, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
         const fetchedResponses = response.data.responses || response.data;
 
-        const formResponse = await axios.get<{ questions: Question[] }>(`http://localhost:8000/api/forms/${uniqueUrl}`);
+        const formResponse = await axios.get<{ questions: Question[] }>(`https://formistiq-server.vercel.app/api/forms/${uniqueUrl}`);
         const fetchedQuestions = formResponse.data.questions || [];
 
         const questionMap: Record<string, string> = {};
