@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { useContext, useState, useEffect } from 'react';
 import { AuthContext } from '@/components/AuthProvider';
@@ -9,12 +9,13 @@ import { HiOutlineChatBubbleLeft, HiOutlineSparkles, HiOutlineShare } from 'reac
 
 const animatedWords = ['Smart', 'Fast', 'Seamless'];
 
-const fadeInUp = {
-  hidden: { opacity: 0, y: 20 },
+const fadeInUp: Variants = {
+  hidden: { opacity: 0, y: 20, scale: 0.95 },
   show: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5, ease: [0.4, 0, 0.2, 1] },
+    scale: 1,
+    transition: { duration: 0.6, ease: [0.33, 1, 0.68, 1] },
   },
 };
 
@@ -31,17 +32,19 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center justify-start bg-black text-white px-6 sm:px-12 lg:px-20 pt-8 pb-16 font-sans">
+    <div className="min-h-screen w-full flex flex-col items-center justify-start bg-gradient-to-b from-neutral-950 to-black text-white px-6 sm:px-12 lg:px-20 pt-12 pb-16 font-sans">
       <motion.div
-        className="w-full max-w-6xl bg-gray-900/30 backdrop-blur-xl rounded-3xl py-8 sm:py-10 px-5 sm:px-8 shadow-[0_0_25px_rgba(0,122,255,0.4)] border border-gray-800/60 flex flex-col justify-between"
+        className="w-full max-w-6xl bg-gray-900/20 backdrop-blur-lg rounded-3xl py-10 sm:py-12 px-6 sm:px-10 shadow-[0_0_30px_rgba(0,122,255,0.5)] border border-gray-800/50 flex flex-col justify-between"
         initial={{ opacity: 0, scale: 0.96 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 1, ease: 'easeOut' }}
+        transition={{ duration: 1, ease: [0.33, 1, 0.68, 1] }}
         draggable="false"
       >
         {/* Brand Name */}
         <motion.h1
-          className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-2 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600 relative inline-block"
+          className="text-4xl sm:text-5xl font-extrabold tracking-tight mb-3 text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 relative inline-block"
+          initial="hidden"
+          animate="show"
           variants={fadeInUp}
         >
           FormiStiq
@@ -49,15 +52,18 @@ export default function Home() {
 
         {/* Animated Tagline */}
         <motion.div
-          className="flex items-center justify-center space-x-1 text-base sm:text-lg font-semibold mb-5 select-none"
+          className="flex items-center justify-center space-x-2 text-base sm:text-lg font-semibold mb-6 select-none"
+          initial="hidden"
+          animate="show"
           variants={fadeInUp}
+          transition={{ delay: 0.2 }}
         >
           <span>Intelligent Forms with</span>
-          <div className="relative w-32 h-6 overflow-hidden">
+          <div className="relative w-32 h-7 overflow-hidden">
             <AnimatePresence mode="wait">
               <motion.span
                 key={animatedWords[currentWordIndex]}
-                className="absolute text-blue-400 font-extrabold"
+                className="absolute text-purple-400 font-extrabold"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
@@ -72,45 +78,54 @@ export default function Home() {
 
         {/* FormiAI: The Next Revolution Section */}
         <motion.div
-          className="max-w-4xl mx-auto mb-12"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.6, ease: 'easeOut' }}
+          className="max-w-5xl mx-auto mb-12"
+          initial="hidden"
+          animate="show"
+          variants={{
+            hidden: { opacity: 0 },
+            show: { opacity: 1, transition: { staggerChildren: 0.2 } },
+          }}
         >
-          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600 mb-4">
+          <motion.h2
+            className="text-2xl sm:text-3xl md:text-4xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 mb-5"
+            variants={fadeInUp}
+          >
             FormiAI: The Next Revolution
-          </h2>
-          <p className="text-center text-gray-300 text-sm sm:text-base mb-6 max-w-xl mx-auto">
-            FormiAI redefines form creation with AI-powered intelligence, crafting tailored forms instantly to meet your unique needs.
-          </p>
+          </motion.h2>
+          <motion.p
+            className="text-center text-gray-200 text-sm sm:text-base mb-8 max-w-2xl mx-auto leading-relaxed"
+            variants={fadeInUp}
+          >
+            FormiAI transforms form creation with cutting-edge AI, delivering tailored, intelligent forms in seconds to streamline your workflow.
+          </motion.p>
           <div className="flex flex-col sm:grid sm:grid-cols-3 gap-6">
             {[
               {
                 title: 'Describe Needs',
-                desc: 'Chat with FormiAI to specify your form’s topic and requirements.',
-                icon: <HiOutlineChatBubbleLeft className="h-8 w-8 sm:h-10 sm:w-10 text-blue-400" />,
+                desc: 'Chat with FormiAI to define your form’s topic and specific requirements effortlessly.',
+                icon: <HiOutlineChatBubbleLeft className="h-10 w-10 sm:h-12 sm:w-12 text-blue-400" />,
               },
               {
                 title: 'AI Generates',
-                desc: 'FormiAI instantly creates a tailored form with relevant questions.',
-                icon: <HiOutlineSparkles className="h-8 w-8 sm:h-10 sm:w-10 text-blue-400" />,
+                desc: 'FormiAI instantly crafts a customized form with smart, relevant questions.',
+                icon: <HiOutlineSparkles className="h-10 w-10 sm:h-12 sm:w-12 text-blue-400" />,
               },
               {
                 title: 'Share & Collect',
-                desc: 'Share the unique form link and collect responses effortlessly.',
-                icon: <HiOutlineShare className="h-8 w-8 sm:h-10 sm:w-10 text-blue-400" />,
+                desc: 'Share unique form links and collect responses with ease and precision.',
+                icon: <HiOutlineShare className="h-10 w-10 sm:h-12 sm:w-12 text-blue-400" />,
               },
             ].map(({ title, desc, icon }, index) => (
               <motion.div
                 key={title}
-                className="flex flex-col items-center text-center px-2 sm:px-4 bg-[#222222]/60 backdrop-blur-md border border-gray-700/40 rounded-xl p-6 shadow-sm"
+                className="flex flex-col items-center text-center px-3 sm:px-5 bg-[#222222]/60 backdrop-blur-md border border-gray-700/40 rounded-2xl p-8 shadow-lg hover:scale-105 transition-transform duration-300"
                 variants={fadeInUp}
-                transition={{ delay: 0.8 + index * 0.2 }}
+                transition={{ delay: 0.4 + index * 0.2 }}
                 draggable="false"
               >
-                <div className="mb-3">{icon}</div>
-                <h3 className="text-base sm:text-lg font-semibold mb-2 text-white">{title}</h3>
-                <p className="text-gray-400 text-xs sm:text-sm leading-snug">{desc}</p>
+                <div className="mb-4">{icon}</div>
+                <h3 className="text-lg sm:text-xl font-semibold mb-3 text-white">{title}</h3>
+                <p className="text-gray-300 text-sm sm:text-base leading-snug">{desc}</p>
               </motion.div>
             ))}
           </div>
@@ -118,26 +133,39 @@ export default function Home() {
 
         {/* FormiStiq Description */}
         <motion.p
-          className="max-w-3xl mx-auto text-gray-300 text-center text-sm sm:text-base leading-relaxed px-4 sm:px-0 mb-8"
+          className="max-w-3xl mx-auto text-gray-200 text-center text-sm sm:text-base leading-relaxed px-4 sm:px-0 mb-10"
+          initial="hidden"
+          animate="show"
           variants={fadeInUp}
-          transition={{ delay: 1.4 }}
+          transition={{ delay: 1.0 }}
         >
-          FormiStiq is your all-in-one platform for creating, sharing, and managing intelligent forms. With secure data collection and real-time tracking, it simplifies every step of your workflow.
+          FormiStiq is the ultimate platform for crafting, sharing, and managing intelligent forms. With secure data handling and real-time insights, it empowers seamless data collection for teams of all sizes.
         </motion.p>
 
         {/* CTA */}
-        <motion.div
-          className="flex flex-col sm:flex-row justify-center gap-3 max-w-xs mx-auto"
-          variants={fadeInUp}
-          transition={{ delay: 1.6 }}
-        >
-          <Link
-            href={user ? '/dashboard' : '/login'}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-4 rounded-full shadow-lg transition text-sm sm:text-base flex justify-center items-center"
-          >
-            Try FormiStiq for Free
-          </Link>
-        </motion.div>
+        {/* CTA */}
+<motion.div
+  className="flex flex-col sm:flex-row justify-center gap-4 max-w-md mx-auto"
+  initial="hidden"
+  animate="show"
+  variants={fadeInUp}
+  transition={{ delay: 1.2 }}
+>
+  <Link
+    href={user ? '/dashboard' : '/login'}
+    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-5 px-6 rounded-full shadow-xl transition-all duration-300 text-sm sm:text-base flex justify-center items-center"
+  >
+    Try FormiStiq
+  </Link>
+
+  <button
+    onClick={() => router.push(user ? '/dashboard/formiai' : '/login')}
+    className="w-full bg-transparent border border-gray-600 hover:border-gray-500 text-gray-200 hover:text-white font-semibold py-5 px-6 rounded-full shadow-xl transition-all duration-300 text-sm sm:text-base flex justify-center items-center"
+  >
+    Explore FormiAI
+  </button>
+</motion.div>
+
       </motion.div>
     </div>
   );

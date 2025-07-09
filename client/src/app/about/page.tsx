@@ -1,27 +1,62 @@
+'use client';
+
 import { Mail, Phone } from 'lucide-react';
+import { motion } from 'framer-motion';
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 20 },
+  show: (i = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: i * 0.2,
+      duration: 0.6,
+      ease: [0.33, 1, 0.68, 1],
+    },
+  }),
+};
 
 export default function About() {
   return (
-    <div className="h-[85vh] flex items-center justify-center bg-black text-white px-4 py-12">
-      <div className="w-full max-w-3xl bg-white/5 backdrop-blur-2xl border border-white/10 rounded-3xl p-6 sm:p-10 shadow-2xl text-center space-y-6">
-        {/* Logo + Title */}
-        <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-blue-400 to-purple-500 text-transparent bg-clip-text">
+    <div className="min-h-screen w-full flex items-center justify-center bg-black text-white px-4 py-16">
+      <motion.div
+        className="w-full max-w-3xl bg-[#111] bg-opacity-60 border border-white/10 rounded-3xl p-6 sm:p-10 shadow-2xl backdrop-blur-xl text-center space-y-6"
+        initial="hidden"
+        animate="show"
+        variants={{
+          hidden: {},
+          show: {
+            transition: { staggerChildren: 0.15 },
+          },
+        }}
+      >
+        {/* Title */}
+        <motion.h1
+          className="text-3xl sm:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-blue-400 to-purple-500 text-transparent bg-clip-text"
+          variants={fadeUp}
+        >
           About FormiStiq
-        </h1>
+        </motion.h1>
 
-        {/* Branding Description */}
-        <p className="text-sm sm:text-base text-gray-300 leading-relaxed">
+        {/* Description */}
+        <motion.p
+          className="text-sm sm:text-base text-gray-300 leading-relaxed"
+          variants={fadeUp}
+        >
           <span className="text-white font-semibold">FormiStiq</span> is a modern form-building platform designed for performance, simplicity, and elegance. Whether you’re collecting feedback or managing internal workflows, FormiStiq delivers a seamless experience with clean UI and smooth interactions.
-        </p>
+        </motion.p>
 
-        <p className="text-xs sm:text-sm text-gray-400 leading-relaxed">
+        <motion.p
+          className="text-xs sm:text-sm text-gray-400 leading-relaxed"
+          variants={fadeUp}
+        >
           Built for creators, startups, and professionals — FormiStiq makes form creation feel effortless, intelligent, and beautiful.
-        </p>
+        </motion.p>
 
-        <hr className="border-white/10" />
+        <motion.hr className="border-white/10 my-4" variants={fadeUp} />
 
         {/* Developer Info */}
-        <div className="space-y-2 text-left sm:text-center">
+        <motion.div className="space-y-3 text-left sm:text-center" variants={fadeUp}>
           <p className="text-sm sm:text-base text-white font-medium">
             👨‍💻 Developed by <span className="text-blue-400">Nidhish Rathore</span>
           </p>
@@ -39,23 +74,22 @@ export default function About() {
               +91 87082 95706
             </a>
           </div>
-        </div>
+        </motion.div>
 
         {/* Social Links */}
-        <div className="mt-6 flex justify-center gap-6">
-         <a
-  href="https://github.com/Nidhish-Dev"
-  target="_blank"
-  rel="noopener noreferrer"
-  aria-label="GitHub"
->
-  <img
-    src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg"
-    alt="GitHub"
-    className="w-6 h-6 invert"
-  />
-</a>
-
+        <motion.div className="mt-6 flex justify-center gap-6" variants={fadeUp}>
+          <a
+            href="https://github.com/Nidhish-Dev"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="GitHub"
+          >
+            <img
+              src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg"
+              alt="GitHub"
+              className="w-6 h-6 invert"
+            />
+          </a>
 
           <a
             href="https://www.linkedin.com/in/nidhish-rathore-b2b9bb325/"
@@ -69,8 +103,8 @@ export default function About() {
               className="w-6 h-6"
             />
           </a>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </div>
   );
 }
