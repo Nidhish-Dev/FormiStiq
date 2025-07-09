@@ -64,11 +64,13 @@ export default function Forms() {
         initial={{ opacity: 0, scale: 0.97 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.8, ease: 'easeOut' }}
+        draggable="false"
       >
         <motion.h2
           className="text-2xl sm:text-3xl font-semibold text-center mb-6 text-white"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
         >
           Your Forms
         </motion.h2>
@@ -87,6 +89,7 @@ export default function Forms() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.2 + i * 0.15 }}
+                  draggable="false"
                 >
                   <p className="text-sm sm:text-base font-medium text-white mb-1">{form.title}</p>
                   <p className="text-xs text-gray-400 break-all">
@@ -95,14 +98,20 @@ export default function Forms() {
 
                   <div className="mt-4 flex flex-col sm:flex-row gap-3">
                     <Link
+                      href={`/forms/${form.uniqueUrl}`}
+                      className="flex-1 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 text-sm rounded-full text-center shadow transition-all duration-300"
+                    >
+                      View Form
+                    </Link>
+                    <Link
                       href={`/dashboard/responses/${form.uniqueUrl}`}
-                      className="flex-1 bg-[#007aff] hover:bg-blue-600 text-white px-4 py-2 text-sm rounded-full text-center shadow transition-all"
+                      className="flex-1 bg-[#007aff] hover:bg-blue-600 text-white px-4 py-2 text-sm rounded-full text-center shadow transition-all duration-300"
                     >
                       View Responses
                     </Link>
                     <button
                       onClick={() => copyToClipboard(form.uniqueUrl)}
-                      className="flex-1 bg-white hover:bg-gray-100 text-black px-4 py-2 text-sm rounded-full shadow transition-all"
+                      className="flex-1 bg-white hover:bg-gray-100 text-black px-4 py-2 text-sm rounded-full shadow transition-all duration-300"
                     >
                       Share Form
                     </button>
@@ -117,7 +126,7 @@ export default function Forms() {
         <div className="mt-8 text-center">
           <Link
             href="/dashboard"
-            className="text-sm text-[#007aff] hover:underline transition"
+            className="text-sm text-[#007aff] hover:underline transition-all duration-300"
           >
             ← Back to Dashboard
           </Link>

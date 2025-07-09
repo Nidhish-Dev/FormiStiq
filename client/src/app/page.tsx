@@ -5,8 +5,18 @@ import { useRouter } from 'next/navigation';
 import { useContext, useState, useEffect } from 'react';
 import { AuthContext } from '@/components/AuthProvider';
 import Link from 'next/link';
+import { HiOutlineChatBubbleLeft, HiOutlineSparkles, HiOutlineShare } from 'react-icons/hi2';
 
 const animatedWords = ['Smart', 'Fast', 'Seamless'];
+
+const fadeInUp = {
+  hidden: { opacity: 0, y: 20 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: [0.4, 0, 0.2, 1] },
+  },
+};
 
 export default function Home() {
   const router = useRouter();
@@ -27,19 +37,21 @@ export default function Home() {
         initial={{ opacity: 0, scale: 0.96 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1, ease: 'easeOut' }}
+        draggable="false"
       >
         {/* Brand Name */}
         <motion.h1
           className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-2 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600 relative inline-block"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.2, ease: 'easeOut' }}
+          variants={fadeInUp}
         >
           FormiStiq
         </motion.h1>
 
-        {/* Animated tagline */}
-        <div className="flex items-center justify-center space-x-1 text-base sm:text-lg font-semibold mb-5 select-none">
+        {/* Animated Tagline */}
+        <motion.div
+          className="flex items-center justify-center space-x-1 text-base sm:text-lg font-semibold mb-5 select-none"
+          variants={fadeInUp}
+        >
           <span>Intelligent Forms with</span>
           <div className="relative w-32 h-6 overflow-hidden">
             <AnimatePresence mode="wait">
@@ -56,98 +68,68 @@ export default function Home() {
             </AnimatePresence>
           </div>
           <span>Results.</span>
-        </div>
+        </motion.div>
 
-        {/* Description */}
-        <motion.p
-          className="max-w-3xl mx-auto text-gray-300 text-center text-sm sm:text-base leading-relaxed px-4 sm:px-0 mb-8"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4, ease: 'easeOut' }}
-        >
-          Empower your team with FormiStiq — the intelligent form builder designed to handle every type of
-          question effortlessly, ensuring secure, private, and smooth data collection.
-        </motion.p>
-
-        {/* Features grid */}
+        {/* FormiAI: The Next Revolution Section */}
         <motion.div
-          className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8"
+          className="max-w-4xl mx-auto mb-12"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6, ease: 'easeOut' }}
         >
-          {[
-            {
-              title: 'Flexible Question Types',
-              desc: 'Support short answers, long responses, and multiple-choice questions for diverse data collection.',
-              icon: (
-                <svg
-                  className="w-8 h-8 text-blue-400"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-                </svg>
-              ),
-            },
-            {
-              title: 'Secure & Private',
-              desc: 'Your responses are encrypted and safely stored, giving you peace of mind with every submission.',
-              icon: (
-                <svg
-                  className="w-8 h-8 text-blue-400"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M12 11c0-1.105-.895-2-2-2s-2 .895-2 2 .895 2 2 2 2-.895 2-2zm0 0v2m0 4v1a2 2 0 0 0 4 0v-1m-4-6h4"
-                  />
-                </svg>
-              ),
-            },
-            {
-              title: 'Unique Form Links',
-              desc: 'Share your forms easily with unique URLs, ensuring quick access and better response tracking.',
-              icon: (
-                <svg
-                  className="w-8 h-8 text-blue-400"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M13.828 14.828a4 4 0 1 1-5.656-5.656m1.414-1.414L8 8m8 8l-2.586-2.586"
-                  />
-                </svg>
-              ),
-            },
-          ].map(({ title, desc, icon }) => (
-            <div key={title} className="flex flex-col items-center text-center px-2 sm:px-4">
-              <div className="mb-2">{icon}</div>
-              <h3 className="text-base font-semibold mb-1">{title}</h3>
-              <p className="text-gray-400 text-xs sm:text-sm leading-snug">{desc}</p>
-            </div>
-          ))}
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600 mb-4">
+            FormiAI: The Next Revolution
+          </h2>
+          <p className="text-center text-gray-300 text-sm sm:text-base mb-6 max-w-xl mx-auto">
+            FormiAI redefines form creation with AI-powered intelligence, crafting tailored forms instantly to meet your unique needs.
+          </p>
+          <div className="flex flex-col sm:grid sm:grid-cols-3 gap-6">
+            {[
+              {
+                title: 'Describe Needs',
+                desc: 'Chat with FormiAI to specify your form’s topic and requirements.',
+                icon: <HiOutlineChatBubbleLeft className="h-8 w-8 sm:h-10 sm:w-10 text-blue-400" />,
+              },
+              {
+                title: 'AI Generates',
+                desc: 'FormiAI instantly creates a tailored form with relevant questions.',
+                icon: <HiOutlineSparkles className="h-8 w-8 sm:h-10 sm:w-10 text-blue-400" />,
+              },
+              {
+                title: 'Share & Collect',
+                desc: 'Share the unique form link and collect responses effortlessly.',
+                icon: <HiOutlineShare className="h-8 w-8 sm:h-10 sm:w-10 text-blue-400" />,
+              },
+            ].map(({ title, desc, icon }, index) => (
+              <motion.div
+                key={title}
+                className="flex flex-col items-center text-center px-2 sm:px-4 bg-[#222222]/60 backdrop-blur-md border border-gray-700/40 rounded-xl p-6 shadow-sm"
+                variants={fadeInUp}
+                transition={{ delay: 0.8 + index * 0.2 }}
+                draggable="false"
+              >
+                <div className="mb-3">{icon}</div>
+                <h3 className="text-base sm:text-lg font-semibold mb-2 text-white">{title}</h3>
+                <p className="text-gray-400 text-xs sm:text-sm leading-snug">{desc}</p>
+              </motion.div>
+            ))}
+          </div>
         </motion.div>
+
+        {/* FormiStiq Description */}
+        <motion.p
+          className="max-w-3xl mx-auto text-gray-300 text-center text-sm sm:text-base leading-relaxed px-4 sm:px-0 mb-8"
+          variants={fadeInUp}
+          transition={{ delay: 1.4 }}
+        >
+          FormiStiq is your all-in-one platform for creating, sharing, and managing intelligent forms. With secure data collection and real-time tracking, it simplifies every step of your workflow.
+        </motion.p>
 
         {/* CTA */}
         <motion.div
           className="flex flex-col sm:flex-row justify-center gap-3 max-w-xs mx-auto"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.8, ease: 'easeOut' }}
+          variants={fadeInUp}
+          transition={{ delay: 1.6 }}
         >
           <Link
             href={user ? '/dashboard' : '/login'}

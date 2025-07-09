@@ -20,12 +20,10 @@ export default function Dashboard() {
   const { user } = useContext(AuthContext);
   const [forms, setForms] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [contextReady, setContextReady] = useState(false); // ✅ to ensure user is ready
+  const [contextReady, setContextReady] = useState(false);
 
   useEffect(() => {
-    if (user !== undefined) {
-      setContextReady(true);
-    }
+    if (user !== undefined) setContextReady(true);
   }, [user]);
 
   useEffect(() => {
@@ -54,12 +52,9 @@ export default function Dashboard() {
       }
     };
 
-    if (contextReady) {
-      fetchForms();
-    }
+    if (contextReady) fetchForms();
   }, [user, contextReady]);
 
-  // Optional: add fallback UI while waiting for AuthContext
   if (!contextReady) {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center">
@@ -87,15 +82,17 @@ export default function Dashboard() {
             show: { transition: { staggerChildren: 0.15 } },
           }}
         >
-          {/* Left Section */}
-          <motion.div className="flex flex-col justify-center items-start text-left" >
+          {/* 👋 Welcome Section */}
+          <motion.div
+            className="flex flex-col justify-center items-start text-left order-1 md:order-1"
+            variants={fadeInUp}
+          >
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold mb-3 text-white">
               Welcome back, {user?.firstName}!
             </h1>
 
             <p className="text-sm sm:text-base text-gray-400 mb-8 max-w-md">
-              Manage your forms quickly and easily with FormiStiq — your all-in-one
-              platform for creating, editing, and analyzing forms with zero hassle.
+              Manage your forms quickly and easily with FormiStiq — your all-in-one platform for creating, editing, and analyzing forms with zero hassle.
             </p>
 
             {loading ? (
@@ -124,18 +121,17 @@ export default function Dashboard() {
             </div>
           </motion.div>
 
-          {/* Right Section */}
+          {/* ⚡ FormiAI Section */}
           <motion.div
-            className="flex flex-col justify-center items-start text-left border-t md:border-t-0 md:border-l border-gray-700/40 pt-8 md:pt-0 md:pl-6"
-
+            className="flex flex-col justify-center items-start text-left border-t md:border-t-0 md:border-l border-gray-700/40 pt-8 md:pt-0 md:pl-6 order-2 md:order-2"
+            variants={fadeInUp}
           >
             <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-3 flex items-center gap-2">
               <HiOutlineBolt className="h-6 w-6" />
               Generate Forms with FormiAI
             </h2>
             <p className="text-gray-400 text-sm sm:text-base mb-6 max-w-md">
-              Use our AI-powered assistant to automatically create forms tailored to your exact requirements.
-              Save time and effort while getting smarter, more intuitive forms every time.
+              Use our AI-powered assistant to automatically create forms tailored to your exact requirements. Save time and effort while getting smarter, more intuitive forms every time.
             </p>
             <Link
               href="/dashboard/formiai"

@@ -1,5 +1,5 @@
 const express = require('express');
-const { createForm, getUserForms, getFormByUrl, submitResponse, getFormResponses } = require('../controllers/formController');
+const { createForm, generateFormWithAI, getUserForms, getFormByUrl, submitResponse, getFormResponses } = require('../controllers/formController');
 const jwt = require('jsonwebtoken');
 
 const router = express.Router();
@@ -21,6 +21,7 @@ const authMiddleware = (req, res, next) => {
 
 // Protected routes
 router.post('/', authMiddleware, createForm);
+router.post('/ai', authMiddleware, generateFormWithAI);
 router.get('/', authMiddleware, getUserForms);
 router.get('/:uniqueUrl', getFormByUrl); // Public access
 router.post('/:uniqueUrl/submit', submitResponse); // Public access
