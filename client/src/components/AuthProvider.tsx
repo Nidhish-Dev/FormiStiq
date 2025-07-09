@@ -38,36 +38,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return; // Prevent SSR issues
+
     const token = localStorage.getItem('token');
     const storedUser = localStorage.getItem('user');
 
-    if (token && storedUser) {
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      setUser(JSON.parse(storedUser));
-      setLoading(false);
-    } else if (token) {
-      verifyToken(token)
-        .then((decoded) => {
-          const userFromToken: User = {
-            id: decoded.userId,
-            email: decoded.email,
-            firstName: decoded.firstName || '',
-            lastName: decoded.lastName || '',
-          };
-          localStorage.setItem('user', JSON.stringify(userFromToken));
+    const initAuth = async () => {
+      if (token && storedUser) {
+        try {
+          const decoded = await verifyToken(token);
+          const parsedUser = JSON.parse(storedUser);
+          setUser(parsedUser);
           axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-          setUser(userFromToken);
-        })
-        .catch(() => {
+        } catch (err) {
+          console.warn('Token invalid or expired, clearing...');
           localStorage.removeItem('token');
           localStorage.removeItem('user');
           delete axios.defaults.headers.common['Authorization'];
           setUser(null);
-        })
-        .finally(() => setLoading(false));
-    } else {
+        }
+      } else {
+        setUser(null);
+      }
       setLoading(false);
-    }
+    };
+
+    initAuth();
   }, []);
 
   const login = async (email: string, password: string) => {

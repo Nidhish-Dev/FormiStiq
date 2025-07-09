@@ -88,7 +88,7 @@ export default function Dashboard() {
           }}
         >
           {/* Left Section */}
-          <motion.div className="flex flex-col justify-center items-start text-left" variants={fadeInUp}>
+          <motion.div className="flex flex-col justify-center items-start text-left" >
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold mb-3 text-white">
               Welcome back, {user?.firstName}!
             </h1>
@@ -127,7 +127,7 @@ export default function Dashboard() {
           {/* Right Section */}
           <motion.div
             className="flex flex-col justify-center items-start text-left border-t md:border-t-0 md:border-l border-gray-700/40 pt-8 md:pt-0 md:pl-6"
-            variants={fadeInUp}
+
           >
             <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-3 flex items-center gap-2">
               <HiOutlineBolt className="h-6 w-6" />
