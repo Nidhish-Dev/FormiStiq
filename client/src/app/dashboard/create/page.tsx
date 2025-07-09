@@ -51,7 +51,7 @@ export default function FormiAI() {
       }
 
       const response = await axios.post(
-        'https://formistiq-server.vercel.app/api/forms/ai',
+        'https://formistiq.onrender.com/api/forms/ai',
         { topic, numQuestions: parseInt(numQuestions), questionType },
         { headers: { Authorization: `Bearer ${token}` } }
       );

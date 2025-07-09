@@ -34,7 +34,7 @@ export default function Dashboard() {
         const token = localStorage.getItem('token');
         if (!user || !token) return;
 
-        const response = await fetch('https://formistiq-server.vercel.app/api/forms', {
+        const response = await fetch('https://formistiq.onrender.com/api/forms', {
           headers: { Authorization: `Bearer ${token}` },
         });
 

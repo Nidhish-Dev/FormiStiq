@@ -35,7 +35,7 @@ export default function FormSubmission({ params }: { params: Promise<{ uniqueUrl
     const fetchForm = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`https://formistiq-server.vercel.app/api/forms/${uniqueUrl}`);
+        const response = await axios.get(`https://formistiq.onrender.com/api/forms/${uniqueUrl}`);
         setForm(response.data);
         setAnswers(new Array(response.data.questions.length).fill(''));
         setError('');
@@ -66,7 +66,7 @@ export default function FormSubmission({ params }: { params: Promise<{ uniqueUrl
     }));
 
     try {
-      await axios.post(`https://formistiq-server.vercel.app/api/forms/${uniqueUrl}/submit`, {
+      await axios.post(`https://formistiq.onrender.com/api/forms/${uniqueUrl}/submit`, {
         answers: formattedAnswers,
       });
       setMessage('Response submitted successfully!');

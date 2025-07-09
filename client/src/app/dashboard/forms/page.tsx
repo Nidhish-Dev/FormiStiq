@@ -21,7 +21,7 @@ export default function Forms() {
     const fetchForms = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('https://formistiq-server.vercel.app/api/forms', {
+        const response = await axios.get('https://formistiq.onrender.com/api/forms', {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
         setForms(response.data);
