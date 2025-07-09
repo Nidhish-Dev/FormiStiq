@@ -59,7 +59,7 @@ export default function CreateForm() {
     setMessage('');
     try {
       const resp = await axios.post(
-        'http://localhost:8000/api/forms',
+        'https://formistiq-server.vercel.app/api/forms',
         formData,
         { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
       );

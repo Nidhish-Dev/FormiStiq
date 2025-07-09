@@ -28,13 +28,14 @@ export default function FormSubmission({ params }: { params: Promise<{ uniqueUrl
   const [answers, setAnswers] = useState<string[]>([]);
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
     const fetchForm = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`http://localhost:8000/api/forms/${uniqueUrl}`);
+        const response = await axios.get(`https://formistiq-server.vercel.app/api/forms/${uniqueUrl}`);
         setForm(response.data);
         setAnswers(new Array(response.data.questions.length).fill(''));
         setError('');
@@ -55,18 +56,25 @@ export default function FormSubmission({ params }: { params: Promise<{ uniqueUrl
       setMessage('Please fill out all required fields.');
       return;
     }
+
+    setSubmitting(true);
+    setMessage('');
+
     const formattedAnswers = form.questions.map((q, i) => ({
       questionId: q._id,
       answer: answers[i] || '',
     }));
+
     try {
-      await axios.post(`http://localhost:8000/api/forms/${uniqueUrl}/submit`, {
+      await axios.post(`https://formistiq-server.vercel.app/api/forms/${uniqueUrl}/submit`, {
         answers: formattedAnswers,
       });
       setMessage('Response submitted successfully!');
       setAnswers(new Array(form.questions.length).fill(''));
     } catch (error: any) {
       setMessage(error.response?.data?.message || 'Error submitting form');
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -157,9 +165,14 @@ export default function FormSubmission({ params }: { params: Promise<{ uniqueUrl
 
               <button
                 type="submit"
-                className="w-full py-3 rounded-full bg-[#007aff] hover:bg-[#005fcc] text-white font-semibold shadow-lg transition duration-200 focus:outline-none focus:ring-4 focus:ring-[#007aff]/50"
+                disabled={submitting}
+                className={`w-full py-3 rounded-full text-white font-semibold shadow-lg transition duration-200 focus:outline-none focus:ring-4 ${
+                  submitting
+                    ? 'bg-gray-600 cursor-not-allowed focus:ring-gray-600'
+                    : 'bg-[#007aff] hover:bg-[#005fcc] focus:ring-[#007aff]/50'
+                }`}
               >
-                Submit Form
+                {submitting ? 'Submitting...' : 'Submit Form'}
               </button>
 
               {message && (

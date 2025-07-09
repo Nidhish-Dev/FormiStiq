@@ -24,7 +24,7 @@ export default function Dashboard() {
     if (user) {
       const fetchForms = async () => {
         try {
-          const response = await fetch('http://localhost:8000/api/forms', {
+          const response = await fetch('https://formistiq-server.vercel.app/api/forms', {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
           });
           const data = await response.json();

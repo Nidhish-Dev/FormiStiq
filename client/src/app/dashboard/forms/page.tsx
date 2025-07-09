@@ -15,16 +15,21 @@ interface Form {
 export default function Forms() {
   const [forms, setForms] = useState<Form[]>([]);
   const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchForms = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/api/forms', {
+        setLoading(true);
+        const response = await axios.get('https://formistiq-server.vercel.app/api/forms', {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
         setForms(response.data);
+        setMessage('');
       } catch (error: any) {
         setMessage(error.response?.data?.message || 'Error fetching forms');
+      } finally {
+        setLoading(false);
       }
     };
     fetchForms();
@@ -38,7 +43,7 @@ export default function Forms() {
 
   return (
     <div className="min-h-screen px-4 py-10 bg-black text-white flex justify-center items-start relative">
-      {/* ✅ Toast Message Outside the Main Card */}
+      {/* Toast Message */}
       <AnimatePresence>
         {message && (
           <motion.div
@@ -68,7 +73,9 @@ export default function Forms() {
           Your Forms
         </motion.h2>
 
-        {forms.length > 0 ? (
+        {loading ? (
+          <p className="text-center text-gray-400 mt-6">Loading forms...</p>
+        ) : forms.length > 0 ? (
           <div className="space-y-4">
             {forms
               .slice()

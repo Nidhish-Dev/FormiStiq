@@ -71,7 +71,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const login = async (email: string, password: string) => {
-    const response = await axios.post('http://localhost:8000/api/auth/login', { email, password });
+    const response = await axios.post('https://formistiq-server.vercel.app/api/auth/login', { email, password });
     const { token, user: userData } = response.data;
 
     localStorage.setItem('token', token);
@@ -87,7 +87,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     phone: string;
     password: string;
   }) => {
-    const response = await axios.post('http://localhost:8000/api/auth/signup', userData);
+    const response = await axios.post('https://formistiq-server.vercel.app/api/auth/signup', userData);
     const { token, user: userDataResponse } = response.data;
 
     localStorage.setItem('token', token);
