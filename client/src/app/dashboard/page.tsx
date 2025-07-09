@@ -1,13 +1,28 @@
 'use client';
 
-import { useContext, useState, useEffect } from 'react';
-import { AuthContext } from '@/components/AuthProvider';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+import { motion, AnimatePresence, Variants, Transition } from 'framer-motion';
 import Link from 'next/link';
-import { HiOutlineClipboardList, HiOutlinePlusCircle } from 'react-icons/hi';
-import { HiOutlineBolt } from 'react-icons/hi2';
+import { use } from 'react';
+import { HiOutlineArrowLeft } from 'react-icons/hi';
 
-const fadeInUp = {
+interface Question {
+  _id: string;
+  text: string;
+}
+
+interface Response {
+  answers: { questionId: string; answer: string }[];
+  submittedAt: string;
+}
+
+interface ApiResponse {
+  responses: Response[];
+  form?: { questions: Question[] };
+}
+
+const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 20 },
   show: {
     opacity: 1,
@@ -16,49 +31,88 @@ const fadeInUp = {
   },
 };
 
-export default function Dashboard() {
-  const { user } = useContext(AuthContext);
-  const [forms, setForms] = useState([]);
+export default function ViewResponses({ params }: { params: Promise<{ uniqueUrl: string }> }) {
+  const { uniqueUrl } = use(params);
+  const [responses, setResponses] = useState<Response[]>([]);
+  const [questionsMap, setQuestionsMap] = useState<Record<string, string>>({});
+  const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchForms = async () => {
+    const fetchData = async () => {
       try {
-        const token =
-          typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+        setLoading(true);
+        const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
 
-        if (!user || !token) return;
-
-        const response = await fetch(
-          'https://formistiq-server.vercel.app/api/forms',
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (!response.ok) {
-          console.error('Failed to fetch:', await response.text());
+        if (!token) {
+          setMessage('Authentication required. Please log in.');
+          setLoading(false);
           return;
         }
 
-        const data = await response.json();
-        setForms(data);
-      } catch (error) {
-        console.error('Error fetching forms:', error);
+        // Fetch responses with retry logic
+        const fetchWithRetry = async (url: string, retries = 3, delay = 1000): Promise<any> => {
+          for (let i = 0; i < retries; i++) {
+            try {
+              const response = await axios.get(url, {
+                headers: { Authorization: `Bearer ${token}` },
+              });
+              return response.data;
+            } catch (error: any) {
+              if (i === retries - 1) throw error;
+              await new Promise(resolve => setTimeout(resolve, delay));
+            }
+          }
+        };
+
+        const responseData = await fetchWithRetry(`https://formistiq-server.vercel.app/api/forms/${uniqueUrl}/responses`);
+        const fetchedResponses = responseData.responses || responseData;
+
+        // Fetch questions separately
+        const formData = await fetchWithRetry(`https://formistiq-server.vercel.app/api/forms/${uniqueUrl}`);
+        const fetchedQuestions = formData.questions || [];
+
+        const questionMap: Record<string, string> = {};
+        fetchedQuestions.forEach((q: Question) => {
+          questionMap[q._id] = q.text;
+        });
+
+        setResponses(fetchedResponses);
+        setQuestionsMap(questionMap);
+        if (fetchedQuestions.length === 0) {
+          setMessage('No questions found for this form.');
+        } else {
+          setMessage('');
+        }
+      } catch (error: any) {
+        console.error('Fetch error:', {
+          message: error.message,
+          status: error.response?.status,
+          data: error.response?.data,
+        });
+        setMessage(error.response?.data?.message || 'Error fetching responses. Please try again.');
+        setResponses([]);
+        setQuestionsMap({});
       } finally {
         setLoading(false);
       }
     };
+    fetchData();
+  }, [uniqueUrl]);
 
-    fetchForms();
-  }, [user]);
+  const containerVariants: Variants = {
+    hidden: {},
+    show: {
+      transition: {
+        staggerChildren: 0.15,
+      },
+    },
+  };
 
   return (
     <AnimatePresence>
       <motion.div
-        key="dashboard"
+        key="responses"
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: 30 }}
@@ -66,79 +120,84 @@ export default function Dashboard() {
         className="min-h-[80vh] bg-black text-white flex items-center justify-center px-6 py-12 md:py-20"
       >
         <motion.div
-          className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-10 bg-[#111]/60 backdrop-blur-xl border border-gray-700/40 rounded-3xl p-6 sm:p-8 shadow-2xl"
+          className="w-full max-w-6xl bg-[#111]/60 backdrop-blur-xl border border-gray-700/40 rounded-3xl p-6 sm:p-8 shadow-2xl"
+          variants={containerVariants}
           initial="hidden"
           animate="show"
-          variants={{
-            hidden: {},
-            show: {
-              transition: {
-                staggerChildren: 0.15,
-              },
-            },
-          }}
         >
-          {/* Left Section */}
-          <motion.div
-            className="flex flex-col justify-center items-start text-left"
+          <motion.h2
+            className="text-2xl sm:text-3xl md:text-4xl font-bold mb-8 text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500"
             variants={fadeInUp}
           >
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold mb-3 text-white">
-              Welcome back, {user?.firstName}!
-            </h1>
+            Form Responses
+          </motion.h2>
 
-            <p className="text-sm sm:text-base text-gray-400 mb-8 max-w-md">
-              Manage your forms quickly and easily with FormiStiq — your all-in-one
-              platform for creating, editing, and analyzing forms with zero hassle.
-            </p>
-
-            {loading ? (
-              <p className="text-gray-500 text-sm mb-6">Loading your forms...</p>
-            ) : (
-              <p className="text-sm sm:text-base text-gray-400 mb-6">
-                You’ve created <strong>{forms.length}</strong> form
-                {forms.length !== 1 && 's'}. Keep building and engaging with your
-                audience.
-              </p>
-            )}
-
-            <div className="flex flex-wrap gap-4">
-              <Link
-                href="/dashboard/create"
-                className="flex items-center gap-2 bg-white text-black px-6 py-2.5 text-sm font-medium rounded-full shadow hover:bg-gray-200 transition-all duration-200"
-              >
-                <HiOutlinePlusCircle className="h-5 w-5" />
-                Create New Form
-              </Link>
-              <Link
-                href="/dashboard/forms"
-                className="flex items-center gap-2 bg-neutral-800 text-white px-6 py-2.5 text-sm font-medium rounded-full shadow hover:bg-neutral-700 transition-all duration-200"
-              >
-                <HiOutlineClipboardList className="h-5 w-5" />
-                View All Forms
-              </Link>
-            </div>
-          </motion.div>
-
-          {/* Right Section */}
-          <motion.div
-            className="flex flex-col justify-center items-start text-left border-t md:border-t-0 md:border-l border-gray-700/40 pt-8 md:pt-0 md:pl-6"
-            variants={fadeInUp}
-          >
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-3 flex items-center gap-2">
-              <HiOutlineBolt className="h-6 w-6" />
-              Generate Forms with FormiAI
-            </h2>
-            <p className="text-gray-400 text-sm sm:text-base mb-6 max-w-md">
-              Use our AI-powered assistant to automatically create forms tailored to
-              your exact requirements. Save time and effort while getting smarter,
-              more intuitive forms every time.
-            </p>
-            <Link
-              href="/dashboard/formiai"
-              className="bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 text-sm font-semibold rounded-full shadow transition-all duration-200"
+          {loading ? (
+            <motion.p
+              className="text-center text-sm sm:text-base text-gray-400"
+              variants={fadeInUp}
             >
-              Launch FormiAI
+              Loading responses...
+            </motion.p>
+          ) : responses.length > 0 ? (
+            <div className="space-y-6">
+              {responses.map((resp, i) => (
+                <motion.div
+                  key={`response-${i}`}
+                  className="bg-gray-800/40 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-5 sm:p-6 shadow-lg hover:shadow-xl transition-shadow duration-300"
+                  variants={fadeInUp}
+                >
+                  <p className="text-sm sm:text-base text-gray-200 font-semibold mb-4">
+                    Response {i + 1} ·{' '}
+                    <span className="text-xs sm:text-sm text-gray-400">
+                      {new Date(resp.submittedAt).toLocaleString()}
+                    </span>
+                  </p>
+                  <div className="space-y-4">
+                    {resp.answers.map((a, j) => (
+                      <motion.div
+                        key={`answer-${i}-${j}`}
+                        className="bg-gray-900/50 p-4 rounded-lg border border-gray-700/30"
+                        variants={fadeInUp}
+                      >
+                        <p className="text-sm sm:text-base text-white font-medium">
+                          {questionsMap[a.questionId] || 'Unknown question'}
+                        </p>
+                        <p className="text-xs sm:text-sm text-gray-300 mt-1">{a.answer}</p>
+                      </motion.div>
+                    ))}
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          ) : (
+            <motion.p
+              className="text-sm sm:text-base text-gray-300 text-center"
+              variants={fadeInUp}
+            >
+              No responses yet.
+            </motion.p>
+          )}
+
+          {message && (
+            <motion.p
+              className="mt-8 text-sm sm:text-base text-center text-green-400"
+              variants={fadeInUp}
+            >
+              {message}
+            </motion.p>
+          )}
+
+          <motion.div
+            className="mt-8 text-center"
+            variants={fadeInUp}
+          >
+            <Link
+              href="/dashboard"
+              className="inline-flex items-center gap-2 text-sm sm:text-base text-blue-400 hover:text-blue-300 transition-colors duration-300"
+            >
+              <HiOutlineArrowLeft className="h-5 w-5" />
+              Back to Dashboard
             </Link>
           </motion.div>
         </motion.div>
