@@ -72,7 +72,7 @@ export default function FormiAI() {
 
   const copyToClipboard = () => {
     if (generatedForm) {
-      navigator.clipboard.writeText(`https://formistiq-server.vercel.app/forms/${generatedForm.uniqueUrl}`);
+      navigator.clipboard.writeText(`https://formistiq.vercel.app/forms/${generatedForm.uniqueUrl}`);
       setMessage('Form URL copied to clipboard!');
       setTimeout(() => setMessage('Form generated successfully!'), 3000);
     }
