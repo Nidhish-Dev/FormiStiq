@@ -14,12 +14,7 @@ app.use((req, res, next) => {
 });
 
 // CORS Middleware
-app.use(cors({
-  origin: 'https://formistiq.vercel.app',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
-}));
+app.use(cors());
 app.use(express.json());
 
 // Routes
