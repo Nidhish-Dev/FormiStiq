@@ -36,7 +36,7 @@ export default function Forms() {
   }, []);
 
   const copyToClipboard = (url: string) => {
-    navigator.clipboard.writeText(`http://localhost:3000/forms/${url}`);
+    navigator.clipboard.writeText(`https://formistiq.vercel.app/forms/${url}`);
     setMessage('URL copied to clipboard!');
     setTimeout(() => setMessage(''), 3000);
   };
@@ -90,7 +90,7 @@ export default function Forms() {
                 >
                   <p className="text-sm sm:text-base font-medium text-white mb-1">{form.title}</p>
                   <p className="text-xs text-gray-400 break-all">
-                    http://localhost:3000/forms/{form.uniqueUrl}
+                    https://formistiq.vercel.app/forms/{form.uniqueUrl}
                   </p>
 
                   <div className="mt-4 flex flex-col sm:flex-row gap-3">

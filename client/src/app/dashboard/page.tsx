@@ -9,32 +9,50 @@ import { HiOutlineBolt } from 'react-icons/hi2';
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
-  show: { 
-    opacity: 1, 
-    y: 0, 
-    transition: { duration: 0.5, ease: [0.4, 0, 0.2, 1] } 
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: [0.4, 0, 0.2, 1] },
   },
 };
 
 export default function Dashboard() {
   const { user } = useContext(AuthContext);
   const [forms, setForms] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (user) {
-      const fetchForms = async () => {
-        try {
-          const response = await fetch('https://formistiq-server.vercel.app/api/forms', {
-            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-          });
-          const data = await response.json();
-          setForms(data);
-        } catch (error) {
-          console.error('Error fetching forms:', error);
+    const fetchForms = async () => {
+      try {
+        const token =
+          typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+
+        if (!user || !token) return;
+
+        const response = await fetch(
+          'https://formistiq-server.vercel.app/api/forms',
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (!response.ok) {
+          console.error('Failed to fetch:', await response.text());
+          return;
         }
-      };
-      fetchForms();
-    }
+
+        const data = await response.json();
+        setForms(data);
+      } catch (error) {
+        console.error('Error fetching forms:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchForms();
   }, [user]);
 
   return (
@@ -63,21 +81,26 @@ export default function Dashboard() {
           {/* Left Section */}
           <motion.div
             className="flex flex-col justify-center items-start text-left"
-
+            variants={fadeInUp}
           >
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold mb-3 text-white">
               Welcome back, {user?.firstName}!
             </h1>
 
             <p className="text-sm sm:text-base text-gray-400 mb-8 max-w-md">
-              Manage your forms quickly and easily with FormiStiq — your all-in-one platform for creating,
-              editing, and analyzing forms with zero hassle.
+              Manage your forms quickly and easily with FormiStiq — your all-in-one
+              platform for creating, editing, and analyzing forms with zero hassle.
             </p>
 
-            <p className="text-sm sm:text-base text-gray-400 mb-6">
-              You’ve created <strong>{forms.length}</strong> form{forms.length !== 1 && 's'}. Keep building and
-              engaging with your audience.
-            </p>
+            {loading ? (
+              <p className="text-gray-500 text-sm mb-6">Loading your forms...</p>
+            ) : (
+              <p className="text-sm sm:text-base text-gray-400 mb-6">
+                You’ve created <strong>{forms.length}</strong> form
+                {forms.length !== 1 && 's'}. Keep building and engaging with your
+                audience.
+              </p>
+            )}
 
             <div className="flex flex-wrap gap-4">
               <Link
@@ -97,18 +120,19 @@ export default function Dashboard() {
             </div>
           </motion.div>
 
-          {/* Right Section - FormiAI */}
+          {/* Right Section */}
           <motion.div
             className="flex flex-col justify-center items-start text-left border-t md:border-t-0 md:border-l border-gray-700/40 pt-8 md:pt-0 md:pl-6"
-
+            variants={fadeInUp}
           >
             <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-3 flex items-center gap-2">
               <HiOutlineBolt className="h-6 w-6" />
               Generate Forms with FormiAI
             </h2>
             <p className="text-gray-400 text-sm sm:text-base mb-6 max-w-md">
-              Use our AI-powered assistant to automatically create forms tailored to your exact requirements.
-              Save time and effort while getting smarter, more intuitive forms every time.
+              Use our AI-powered assistant to automatically create forms tailored to
+              your exact requirements. Save time and effort while getting smarter,
+              more intuitive forms every time.
             </p>
             <Link
               href="/dashboard/formiai"

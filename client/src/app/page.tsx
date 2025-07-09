@@ -21,16 +21,12 @@ export default function Home() {
   }, []);
 
   return (
-    <div
-      className="h-[70vh] w-full flex flex-col items-center justify-start bg-black text-white px-6 sm:px-12 lg:px-20 font-sans"
-      style={{ paddingTop: '2rem' }}
-    >
+    <div className="min-h-screen w-full flex flex-col items-center justify-start bg-black text-white px-6 sm:px-12 lg:px-20 pt-8 pb-16 font-sans">
       <motion.div
-        className="relative w-full max-w-6xl mx-auto bg-gray-900/30 backdrop-blur-xl rounded-3xl py-8 sm:py-10 px-5 sm:px-8 shadow-[0_0_25px_rgba(0,122,255,0.4)] border border-gray-800/60 flex flex-col justify-between"
+        className="w-full max-w-6xl bg-gray-900/30 backdrop-blur-xl rounded-3xl py-8 sm:py-10 px-5 sm:px-8 shadow-[0_0_25px_rgba(0,122,255,0.4)] border border-gray-800/60 flex flex-col justify-between"
         initial={{ opacity: 0, scale: 0.96 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1, ease: 'easeOut' }}
-        style={{ maxHeight: 'calc(100vh - 6rem)' }}
       >
         {/* Brand Name */}
         <motion.h1
@@ -40,7 +36,6 @@ export default function Home() {
           transition={{ duration: 1, delay: 0.2, ease: 'easeOut' }}
         >
           FormiStiq
-         
         </motion.h1>
 
         {/* Animated tagline */}
@@ -63,24 +58,23 @@ export default function Home() {
           <span>Results.</span>
         </div>
 
-        {/* Description / Mission */}
+        {/* Description */}
         <motion.p
           className="max-w-3xl mx-auto text-gray-300 text-center text-sm sm:text-base leading-relaxed px-4 sm:px-0 mb-8"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4, ease: 'easeOut' }}
-          style={{ flexShrink: 0 }}
         >
-          Empower your team with FormiStiq — the intelligent form builder designed to handle every type of question effortlessly, ensuring secure, private, and smooth data collection.
+          Empower your team with FormiStiq — the intelligent form builder designed to handle every type of
+          question effortlessly, ensuring secure, private, and smooth data collection.
         </motion.p>
 
         {/* Features grid */}
         <motion.div
-          className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-6 mb-6"
+          className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6, ease: 'easeOut' }}
-          style={{ flexShrink: 0 }}
         >
           {[
             {
@@ -94,7 +88,6 @@ export default function Home() {
                   strokeWidth={2}
                   viewBox="0 0 24 24"
                   xmlns="http://www.w3.org/2000/svg"
-                  aria-hidden="true"
                 >
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
                 </svg>
@@ -111,7 +104,6 @@ export default function Home() {
                   strokeWidth={2}
                   viewBox="0 0 24 24"
                   xmlns="http://www.w3.org/2000/svg"
-                  aria-hidden="true"
                 >
                   <path
                     strokeLinecap="round"
@@ -132,9 +124,12 @@ export default function Home() {
                   strokeWidth={2}
                   viewBox="0 0 24 24"
                   xmlns="http://www.w3.org/2000/svg"
-                  aria-hidden="true"
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.828 14.828a4 4 0 1 1-5.656-5.656m1.414-1.414L8 8m8 8l-2.586-2.586" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M13.828 14.828a4 4 0 1 1-5.656-5.656m1.414-1.414L8 8m8 8l-2.586-2.586"
+                  />
                 </svg>
               ),
             },
@@ -147,22 +142,19 @@ export default function Home() {
           ))}
         </motion.div>
 
-        {/* CTA Buttons */}
+        {/* CTA */}
         <motion.div
           className="flex flex-col sm:flex-row justify-center gap-3 max-w-xs mx-auto"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.8, ease: 'easeOut' }}
-          style={{ flexShrink: 0 }}
         >
-         <Link
-  href={user ? '/dashboard' : '/login'}
-  className="w-full sm:w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-4 rounded-full shadow-lg transition text-sm sm:text-base flex justify-center items-center"
->
-  Try FormiStiq for Free
-</Link>
-
-         
+          <Link
+            href={user ? '/dashboard' : '/login'}
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-4 rounded-full shadow-lg transition text-sm sm:text-base flex justify-center items-center"
+          >
+            Try FormiStiq for Free
+          </Link>
         </motion.div>
       </motion.div>
     </div>
