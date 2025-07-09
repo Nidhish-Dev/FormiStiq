@@ -20,26 +20,28 @@ export default function Dashboard() {
   const { user } = useContext(AuthContext);
   const [forms, setForms] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [contextReady, setContextReady] = useState(false); // ✅ to ensure user is ready
+
+  useEffect(() => {
+    if (user !== undefined) {
+      setContextReady(true);
+    }
+  }, [user]);
 
   useEffect(() => {
     const fetchForms = async () => {
       try {
-        const token =
-          typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+        if (typeof window === 'undefined') return;
 
+        const token = localStorage.getItem('token');
         if (!user || !token) return;
 
-        const response = await fetch(
-          'https://formistiq-server.vercel.app/api/forms',
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await fetch('https://formistiq-server.vercel.app/api/forms', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
         if (!response.ok) {
-          console.error('Failed to fetch:', await response.text());
+          console.error('Failed to fetch forms:', await response.text());
           return;
         }
 
@@ -52,8 +54,19 @@ export default function Dashboard() {
       }
     };
 
-    fetchForms();
-  }, [user]);
+    if (contextReady) {
+      fetchForms();
+    }
+  }, [user, contextReady]);
+
+  // Optional: add fallback UI while waiting for AuthContext
+  if (!contextReady) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <p className="text-gray-400 text-sm">Loading dashboard...</p>
+      </div>
+    );
+  }
 
   return (
     <AnimatePresence>
@@ -71,18 +84,11 @@ export default function Dashboard() {
           animate="show"
           variants={{
             hidden: {},
-            show: {
-              transition: {
-                staggerChildren: 0.15,
-              },
-            },
+            show: { transition: { staggerChildren: 0.15 } },
           }}
         >
           {/* Left Section */}
-          <motion.div
-            className="flex flex-col justify-center items-start text-left"
-            variants={fadeInUp}
-          >
+          <motion.div className="flex flex-col justify-center items-start text-left" variants={fadeInUp}>
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold mb-3 text-white">
               Welcome back, {user?.firstName}!
             </h1>
@@ -96,9 +102,7 @@ export default function Dashboard() {
               <p className="text-gray-500 text-sm mb-6">Loading your forms...</p>
             ) : (
               <p className="text-sm sm:text-base text-gray-400 mb-6">
-                You’ve created <strong>{forms.length}</strong> form
-                {forms.length !== 1 && 's'}. Keep building and engaging with your
-                audience.
+                You’ve created <strong>{forms.length}</strong> form{forms.length !== 1 && 's'}.
               </p>
             )}
 
@@ -130,9 +134,8 @@ export default function Dashboard() {
               Generate Forms with FormiAI
             </h2>
             <p className="text-gray-400 text-sm sm:text-base mb-6 max-w-md">
-              Use our AI-powered assistant to automatically create forms tailored to
-              your exact requirements. Save time and effort while getting smarter,
-              more intuitive forms every time.
+              Use our AI-powered assistant to automatically create forms tailored to your exact requirements.
+              Save time and effort while getting smarter, more intuitive forms every time.
             </p>
             <Link
               href="/dashboard/formiai"

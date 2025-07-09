@@ -1,5 +1,4 @@
-// lib/auth.ts
-import jwt_decode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 
 interface DecodedToken {
   userId: string;
@@ -11,7 +10,7 @@ interface DecodedToken {
 
 export function verifyToken(token: string): Promise<DecodedToken> {
   try {
-    const decoded: DecodedToken = jwt_decode(token);
+    const decoded: DecodedToken = jwtDecode(token);
     const now = Date.now() / 1000;
 
     if (decoded.exp < now) {
