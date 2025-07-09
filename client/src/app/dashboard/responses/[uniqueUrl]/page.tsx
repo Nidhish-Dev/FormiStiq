@@ -33,7 +33,7 @@ export default function ViewResponses({ params }: { params: Promise<{ uniqueUrl:
       try {
         setLoading(true);
 
-        const response = await axios.get<ApiResponse>(`https://formistiq-server.vercel.app/forms/${uniqueUrl}/responses`, {
+        const response = await axios.get<ApiResponse>(`https://formistiq-server.vercel.app/api/forms/${uniqueUrl}/responses`, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
         const fetchedResponses = response.data.responses || response.data;
